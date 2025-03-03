@@ -6,8 +6,10 @@ import json
 file_dir = "roboracer_flagged_data/wall_follow"
 os.makedirs(file_dir, exist_ok=True)
 
-file_dir_ws = "../roboracer-ws/roboracer_flagged_data/wall_follow"
+file_dir_ws = "../roboracer-ws/src/wall_follow_ui_control/config"
 os.makedirs(file_dir_ws, exist_ok=True)
+
+colcon_build_file_dir_ws = "../roboracer-ws/install/wall_follow_ui_control/share/wall_follow_ui_control/config"
 
 def wall_follow_params_set(set_throttle, throttle, lookahead_dist, kp, kd, ki):
     """
@@ -68,16 +70,24 @@ def flag_configuration(use_throttle, throttle, lookahead_dist, kp, kd, ki, flag_
         timestamp = int(time.time())
         filename = f"{file_dir}/flagged_data_{timestamp}.json"
         
-        filenamelatest = f"{file_dir_ws}/flagged_data_latest.json"
+        filenamelatest = f"{file_dir_ws}/wall_follow_params.json"
+
+        filename_ws = f"{colcon_build_file_dir_ws}/wall_follow_params.json"
 
         try:
+            # Store with timestamp
             with open(filename, "w") as f:
                 json.dump(flagged_data, f, indent=4)
 
+            # Store before colcon build
             with open(filenamelatest, "w") as f:
                 json.dump(flagged_data, f, indent=4)
 
-            return f"Flagged data saved to {filename}."
+            # Store after colcon build
+            with open(filename_ws, "w") as f:
+                json.dump(flagged_data, f, indent=4)
+
+            return f"Flagged data saved to locations: \n{filename} \n{filenamelatest}."
         except Exception as e:
             return f"Error saving flagged data: {str(e)}"
 
