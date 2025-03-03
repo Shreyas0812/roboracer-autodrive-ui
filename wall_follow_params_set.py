@@ -64,9 +64,14 @@ def flag_configuration(use_throttle, throttle, lookahead_dist, kp, kd, ki, flag_
 
         timestamp = int(time.time())
         filename = f"{file_dir}/flagged_data_{timestamp}.json"
+        
+        filenamelatest = f"{file_dir}/flagged_data_latest.json"
 
         try:
             with open(filename, "w") as f:
+                json.dump(flagged_data, f, indent=4)
+
+            with open(filenamelatest, "w") as f:
                 json.dump(flagged_data, f, indent=4)
 
             return f"Flagged data saved to {filename}."
