@@ -6,6 +6,9 @@ import json
 file_dir = "roboracer_flagged_data/wall_follow"
 os.makedirs(file_dir, exist_ok=True)
 
+file_dir_ws = "../roboracer-ws/roboracer_flagged_data/wall_follow"
+os.makedirs(file_dir_ws, exist_ok=True)
+
 def wall_follow_params_set(set_throttle, throttle, lookahead_dist, kp, kd, ki):
     """
     This function sets the parameters for wall following behavior in a robot.
@@ -65,7 +68,7 @@ def flag_configuration(use_throttle, throttle, lookahead_dist, kp, kd, ki, flag_
         timestamp = int(time.time())
         filename = f"{file_dir}/flagged_data_{timestamp}.json"
         
-        filenamelatest = f"{file_dir}/flagged_data_latest.json"
+        filenamelatest = f"{file_dir_ws}/flagged_data_latest.json"
 
         try:
             with open(filename, "w") as f:
