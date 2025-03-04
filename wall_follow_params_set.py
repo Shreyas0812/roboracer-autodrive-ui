@@ -87,7 +87,7 @@ def flag_configuration(use_throttle, throttle, lookahead_dist, kp, kd, ki, flag_
             with open(filename_ws, "w") as f:
                 json.dump(flagged_data, f, indent=4)
 
-            return f"Flagged data saved to locations: \n{filename} \n{filenamelatest}."
+            return f"Flagged data saved to locations: \n{filename} \n{filenamelatest} \n{filename_ws}"
         except Exception as e:
             return f"Error saving flagged data: {str(e)}"
 
@@ -154,7 +154,8 @@ with gr.Blocks(theme="soft", title="Set Wall Follow Parameters") as demo:
         gr.Examples(
             examples=[
                 [True, 0.1, 2.0, 1.0, 0.5, 0.1],
-                [False, None, 3.5, 2.0, 1.0, 0.05]
+                [False, None, 3.5, 2.0, 1.0, 0.05],
+                [True, 0.2, 0.8, 2.4, 1.0, 0.0]
             ],
             inputs=[use_throttle, throttle, lookahead_dist, kp, kd, ki],
             outputs=[throttle, lookahead_dist, kp, kd, ki],
