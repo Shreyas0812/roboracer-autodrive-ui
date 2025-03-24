@@ -12,19 +12,20 @@ os.makedirs(file_dir_ws, exist_ok=True)
 colcon_build_file_dir_ws = "../roboracer-ws/install/pure_pursuit/share/pure_pursuit/config"
 
 
-def pure_pursuit_params_set(throttle, kp, lookahead_distance):
+def pure_pursuit_params_set(throttle, kp, kv, lookahead_distance):
 
     flagged_text = (
         "{\n"
         f'\t"throttle": \t{throttle},\n'
         f'\t"kp": \t{kp},\n'
+        f'\t"kv": \t{kv},\n'
         f'\t"lookahead_distance": \t{lookahead_distance},\n'
         "}"
     )
 
-    return throttle, kp, lookahead_distance, flagged_text
+    return throttle, kp, kv, lookahead_distance, flagged_text
 
-def flag_configuration(throttle, kp, lookahead_distance, flag_reason, flag_msg):
+def flag_configuration(throttle, kp, kv, lookahead_distance, flag_reason, flag_msg):
     """
     This function flags the configuration of the pure pursuit parameters.
     It saves the flagged data to a JSON file.
@@ -33,6 +34,7 @@ def flag_configuration(throttle, kp, lookahead_distance, flag_reason, flag_msg):
     flagged_data = {
         "throttle": throttle,
         "kp": kp,
+        "kv": kv,
         "lookahead_distance": lookahead_distance,
         "flag_reason": flag_reason,
         "flag_msg": flag_msg
@@ -76,6 +78,7 @@ with gr.Blocks(theme="soft", title="Set Pure Pursuit Parameters") as demo:
                     gr.Markdown("### pURE pURSUIT Parameters")
                     throttle = gr.Slider(minimum=-1, maximum=1, step=0.01, label="Target Throttle", value=0.15, interactive=True)
                     kp = gr.Slider(minimum=0, maximum=5, step=0.1, label="kp for Curvature", value=1, interactive=True)
+                    kv = gr.Slider(minimum=0, maximum=5, step=0.1, label="kv for Speed Control at turns", value=1, interactive=True)
                     lookahead_distance = gr.Slider(minimum=0, maximum=10, step=0.1, label="Lookahead Distance", value=1.2, interactive=True)
 
                     submit_button = gr.Button("Set Parameters", variant="primary")
@@ -91,6 +94,7 @@ with gr.Blocks(theme="soft", title="Set Pure Pursuit Parameters") as demo:
             gr.Textbox(label="Flagging Directory", value=file_dir, interactive=False) 
             op_throttle = gr.Textbox(label="throttle", visible=False)
             op_kp = gr.Textbox(label="kp", visible=False)
+            op_kv = gr.Textbox(label="kv", visible=False)
             op_lookahead_distance = gr.Textbox(label="lookahead_distance", visible=False)
             
             with gr.Row():
@@ -112,10 +116,10 @@ with gr.Blocks(theme="soft", title="Set Pure Pursuit Parameters") as demo:
         # Examples
         gr.Examples(
             examples=[
-                [0.15, 1, 1.2],
+                [0.15, 1, 0.5, 1.2],
             ],
-            inputs=[throttle, kp, lookahead_distance],
-            outputs=[throttle, kp, lookahead_distance],
+            inputs=[throttle, kp, kv, lookahead_distance],
+            outputs=[throttle, kp, kv, lookahead_distance],
         )
     
     with gr.Row():
@@ -141,13 +145,13 @@ with gr.Blocks(theme="soft", title="Set Pure Pursuit Parameters") as demo:
     
     submit_button.click(
         fn = pure_pursuit_params_set,
-        inputs=[throttle, kp, lookahead_distance],
-        outputs=[op_throttle, op_kp, op_lookahead_distance, flagged_text]
+        inputs=[throttle, kp, kv, lookahead_distance],
+        outputs=[op_throttle, op_kp, op_kv, op_lookahead_distance, flagged_text]
     )
     
     flag_button.click(
         fn=flag_configuration,
-        inputs=[op_throttle, op_kp, op_lookahead_distance, flag_reason, flag_msg],
+        inputs=[op_throttle, op_kp, op_kv, op_lookahead_distance, flag_reason, flag_msg],
         outputs=flag_result
     )
 
